@@ -6,9 +6,10 @@ import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
 
 export default function CodeEditor () {
-  const [rawCode, setRawCode] = useState("function main () {}");
+  // const [rawCode, setRawCode] = useState("function main () { return '1' }");
+  const [rawCode, setRawCode] = useState("print(\"Hello, Python...!\")");
   const runCodeMutation = api.example.runCode.useMutation();
-  console.info(runCodeMutation.data);
+  console.info(runCodeMutation.data)
 
   return (
     <div>
