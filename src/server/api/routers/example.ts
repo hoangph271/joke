@@ -32,18 +32,15 @@ export const exampleRouter = createTRPCRouter({
     }),
 
   runCode: publicProcedure
-    .input(z.object({ text: z.string() }))
+    .input(z.object({ rawCode: z.string(), language: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const container = await dockerode.createContainer({
-        Cmd: ['cat /app/output.txt'],
-        // Image: 'joe_runners_javascript:latest',
-        Image: 'joe_runners_python:latest',
+        Image: `joe_runners_${input.language}:latest`,
         AttachStdout: true,
         AttachStderr: true,
         Tty: true,
         Env: [
-          `RAW_CODE=${input.text}`,
-          // `MAIN_FUNCTION_NAME=main`,
+          `RAW_CODE=${input.rawCode}`,
         ]
       })
 
@@ -51,6 +48,7 @@ export const exampleRouter = createTRPCRouter({
       await container.wait()
 
       const logs = await container.logs({ stdout: true })
+      console.info(logs.toString().trim())
 
       return logs.toString().trim();
     }),
